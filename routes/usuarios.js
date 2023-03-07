@@ -11,14 +11,21 @@ const { check } = require('express-validator');
 const  Role  = require('../models/role');
 
 const { validateFields } = require('../middlewares/field-validation');
-const { isValidRol, isEmailExist } = require('../helpers/db-validators');
+const {
+  isValidRol,
+  isEmailExist,
+  isUserExist,
+} = require("../helpers/db-validators");
 
 const router = Router();
 
 
 router.get('/', usuariosGet );
 
-router.put('/:id', usuariosPut );
+router.put('/:id', 
+  check('id', 'is not a valid id').isMongoId().custom(isUserExist),
+  validateFields,
+  usuariosPut );
 
 router.post('/', 
   check('email').isEmail().custom(isEmailExist),
@@ -28,7 +35,10 @@ router.post('/',
   validateFields,
   usuariosPost );
 
-router.delete('/', usuariosDelete );
+router.delete('/:id', 
+  check('id', 'not a valid id').isMongoId().custom( isUserExist ),
+  validateFields,
+  usuariosDelete );
 
 router.patch('/', usuariosPatch );
 
