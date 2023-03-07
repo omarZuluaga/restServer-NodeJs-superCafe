@@ -5,9 +5,7 @@ const dbConnection = async() => {
 
   try {
     
-    await mongoose.connect( process.env.MONGODB_ATLAS, {
-      useNewUrlParser: true
-    });
+    await mongoose.connect( process.env.MONGODB_ATLAS );
 
     console.log('Db online');
 
