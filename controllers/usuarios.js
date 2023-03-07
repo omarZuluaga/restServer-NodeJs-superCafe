@@ -6,10 +6,8 @@ const bcrypt = require('bcrypt');
 const usuariosGet = async( req, res ) => {
 
     const {limit , offset } = req.query;
-    const query = { state: true }
-    const users = await User.find( query )
-        .limit(Number(limit))
-        .skip(Number(offset));
+    //const query = { state: true }
+    const users = await User.find();
 
     res.json({
         users,
