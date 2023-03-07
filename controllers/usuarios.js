@@ -1,51 +1,69 @@
 const { response, request } = require('express');
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async( req, res ) => {
 
-    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
+    const {limit , offset } = req.query;
+    const query = { state: true }
+    const users = await User.find( query )
+        .limit(Number(limit))
+        .skip(Number(offset));
 
     res.json({
-        msg: 'get API - controlador',
-        q,
-        nombre,
-        apikey,
-        page, 
-        limit
+        users,
     });
 }
 
-const usuariosPost = (req, res = response) => {
+const usuariosPost = async (req, res) => {
 
-    const { nombre, edad } = req.body;
+    const {username, email, password, role} = req.body;
+    const user = new User({ username, email, password, role });
+
+    const salt = bcrypt.genSaltSync();
+
+    user.password = bcrypt.hashSync( password, salt );
+
+    await user.save();
 
     res.json({
         msg: 'post API - usuariosPost',
-        nombre, 
-        edad
+        user
     });
 }
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res) => {
 
     const { id } = req.params;
+    const { password, google, ...others} = req.body;
+
+    if( password ) { 
+        const salt = bcrypt.genSaltSync();
+
+        others.password = bcrypt.hashSync( password, salt );
+    }
+
+    const userUpdated = await User.findByIdAndUpdate(id, others); 
 
     res.json({
-        msg: 'put API - usuariosPut',
-        id
+        userUpdated
     });
 }
 
-const usuariosPatch = (req, res = response) => {
+const usuariosPatch = (req, res) => {
     res.json({
         msg: 'patch API - usuariosPatch'
     });
 }
 
-const usuariosDelete = (req, res = response) => {
-    res.json({
-        msg: 'delete API - usuariosDelete'
-    });
+const usuariosDelete = async (req, res) => {
+
+    const { id } = req.params;
+
+    const user = await User.findByIdAndUpdate(id, {isActive: false});
+
+    res.json(user);
 }
 
 
