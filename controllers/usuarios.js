@@ -1,17 +1,24 @@
-const { response, request } = require('express');
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
+const UserService = require('../service/user.service');
+
+const userService = new UserService();
 
 
-const usuariosGet = async( req, res ) => {
+const usuariosGet = async( req, res, next ) => {
 
     const {limit , offset } = req.query;
     //const query = { state: true }
-    const users = await User.find();
 
-    res.json({
-        users,
-    });
+    try {
+        const users = await userService.findAll();
+        res.json({
+            users,
+        });
+        
+    } catch (error) {
+        next(error);
+    }
+    
+    
 }
 
 const usuariosPost = async (req, res) => {
