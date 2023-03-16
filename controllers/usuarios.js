@@ -21,39 +21,35 @@ const usuariosGet = async( req, res, next ) => {
     
 }
 
-const usuariosPost = async (req, res) => {
+const usuariosPost = async (req, res, next) => {
 
-    const {username, email, password, role} = req.body;
-    const user = new User({ username, email, password, role });
+    try {
+        const user = await userService.create(req.body);
+        res.json({
+            msg: 'post API - usuariosPost',
+            user
+        });
 
-    const salt = bcrypt.genSaltSync();
-
-    user.password = bcrypt.hashSync( password, salt );
-
-    await user.save();
-
-    res.json({
-        msg: 'post API - usuariosPost',
-        user
-    });
-}
-
-const usuariosPut = async (req, res) => {
-
-    const { id } = req.params;
-    const { password, google, ...others} = req.body;
-
-    if( password ) { 
-        const salt = bcrypt.genSaltSync();
-
-        others.password = bcrypt.hashSync( password, salt );
+    } catch (error) {
+        next(error);
     }
 
-    const userUpdated = await User.findByIdAndUpdate(id, others); 
+}
 
-    res.json({
-        userUpdated
-    });
+const usuariosPut = async (req, res, next) => {
+
+    try {
+        const { id } = req.params;
+        const userUpdated = await userService.update(id, req.body);
+        
+        res.json({
+            userUpdated
+        });
+    } catch (error) {
+        next(error);
+    }
+
+
 }
 
 const usuariosPatch = (req, res) => {
@@ -62,13 +58,16 @@ const usuariosPatch = (req, res) => {
     });
 }
 
-const usuariosDelete = async (req, res) => {
+const usuariosDelete = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findByIdAndUpdate(id, {isActive: false});
 
-    const { id } = req.params;
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
 
-    const user = await User.findByIdAndUpdate(id, {isActive: false});
-
-    res.json(user);
 }
 
 
