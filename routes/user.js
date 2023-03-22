@@ -4,7 +4,7 @@ const {
   usuariosPost,
   usuariosDelete,
   usuariosPatch 
-} = require('../controllers/usuarios');
+} = require('../controllers/user');
 
 const { Router } = require('express');
 const { check } = require('express-validator');

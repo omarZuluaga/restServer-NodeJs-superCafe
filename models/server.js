@@ -7,8 +7,11 @@ class Server {
     constructor() {
         this.app  = express();
         this.port = process.env.PORT || 8080;
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';
+        this.paths = { 
+            auth: '/api/auth',
+            categoriesPath: '/api/categories',
+            userPath: '/api/users',
+        }
 
         //db connection
         this.conectDB();
@@ -38,13 +41,14 @@ class Server {
     }
 
     routes() {
-        this.app.use( this.usuariosPath, require('../routes/usuarios'));
-        this.app.use (this.authPath, require('../routes/auth'));
+        this.app.use( this.paths.userPath, require('../routes/user'));
+        this.app.use (this.paths.auth, require('../routes/auth'));
+        this.app.use (this.paths.categoriesPath, require('../routes/categories'));
     }
 
     listen() {
         this.app.listen( this.port, () => {
-            console.log('Servidor corriendo en puerto', this.port );
+            console.log('Server runing on port: ', this.port );
         });
     }
 
