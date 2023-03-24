@@ -1,11 +1,11 @@
-const Category = required('./categories.js');
-const Role = required('./role.js');
-const Server = required('./server.js');
-const User = required('./user.js');
+const Category = require('./categories.js');
+const Role = require('./role.js');
+const Server = require('./server.js');
+const User = require('./user.js');
 
 module.exports = { 
-  Category,
-  Role,
-  Server,
-  User,
+  ...Category,
+  ...Role,
+  ...Server,
+  ...User,
 }

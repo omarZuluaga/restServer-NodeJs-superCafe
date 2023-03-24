@@ -1,6 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('../database/config');
+const {
+  logErrors,
+  ormErrorHandler,
+  boomErrorHandler,
+  errorHandler,
+} = require("../middlewares/error-handler");
 
 class Server {
 
@@ -37,6 +43,11 @@ class Server {
 
         // Directorio Público
         this.app.use( express.static('public') );
+
+        this.app.use( logErrors );
+        this.app.use(ormErrorHandler);
+        this.app.use(boomErrorHandler);
+        this.app.use(errorHandler)
 
     }
 

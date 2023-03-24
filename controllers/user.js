@@ -61,7 +61,7 @@ const usuariosPatch = (req, res) => {
 const usuariosDelete = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const user = await User.findByIdAndUpdate(id, {isActive: false});
+        const user = await userService.delete(id);
 
         res.json(user);
     } catch (error) {

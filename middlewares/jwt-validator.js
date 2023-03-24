@@ -14,7 +14,6 @@ const jwtValidator = async (req, res, next) => {
   try {
     
     const {uid} = jwt.verify(token, process.env.SECRET);
-    console.log("🚀 ~ file: jwt-validator.js:18 ~ jwtValidator ~ uid:", uid);
 
     const user = await User.findById(uid);
 
@@ -38,8 +37,6 @@ const jwtValidator = async (req, res, next) => {
       message: 'invalid token'
     })
   }
-
-  next();
   
 }
 
