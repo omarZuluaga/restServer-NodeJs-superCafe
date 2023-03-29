@@ -1,15 +1,16 @@
-const { validationResult } = require("express-validator")
+const boom = require('@hapi/boom');
 
+function validateFields(schema, property){
+  return (req, res ,next) => {
+    const data = req[property];
+    const { error } = schema.validate(data, {abortEarly: false});
 
+    if(error) {
+      next(boom.badRequest(error));
+    }
 
-const validateFields = (req, res, next) => {
-  const errors = validationResult(req);
-
-  if(!errors.isEmpty()) { 
-    return res.status(400).json(errors);
+    next();
   }
-  
-  next();
 }
 
 module.exports = {

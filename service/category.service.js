@@ -5,7 +5,10 @@ class CategoryService {
 
   constructor() { }
 
-  async find() {}
+  async find() {
+    const categories = await Category.find();
+    return categories;
+  }
 
   async findById(id) {}
 

@@ -42,13 +42,11 @@ class Server {
         this.app.use( express.json() );
 
         // Directorio Público
-        this.app.use( express.static('public') );
-
-        this.app.use( logErrors );
+        this.app.use(logErrors);
         this.app.use(ormErrorHandler);
         this.app.use(boomErrorHandler);
-        this.app.use(errorHandler)
-
+        this.app.use(errorHandler);
+        this.app.use( express.static('public') );
     }
 
     routes() {
