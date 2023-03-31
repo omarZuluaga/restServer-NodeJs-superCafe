@@ -5,12 +5,23 @@ class CategoryService {
 
   constructor() { }
 
-  async find() {
-    const categories = await Category.find();
+  async find(limit, skipIndex) {
+    const categories = await Category.find()
+      .skip(skipIndex)
+      .limit(limit)
+      .populate('user');
     return categories;
   }
 
-  async findById(id) {}
+  async findById(id) {
+    const category = await Category.findById(id).populate('user');
+
+    if(!category) { 
+      throw boom.notFound('Category not found')
+    }
+
+    return category;
+  }
 
   async save(category) {
     await this.existingCategory(category.name);
@@ -33,9 +44,17 @@ class CategoryService {
     return await Category.findOne(name);
   }
 
-  async update(changes, id) {}
+  async update(changes, id) {
+    const categoryUpdated = await Category.findOneAndUpdate(id, changes);
 
-  async delete(id) {}
+    return categoryUpdated;
+  }
+
+  async delete(id) {
+    const userInactivated = await Category.findOneAndUpdate(id, {state: false}, {new: true});
+
+    return userInactivated;
+  }
   
 }
 

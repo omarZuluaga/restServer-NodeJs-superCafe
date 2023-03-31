@@ -7,6 +7,8 @@ const {
   boomErrorHandler,
   errorHandler,
 } = require("../middlewares/error-handler");
+const bodyParser = require('body-parser');
+
 
 class Server {
 

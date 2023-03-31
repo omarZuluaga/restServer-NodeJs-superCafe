@@ -43,7 +43,7 @@ class UserService {
       otherUserChanges.password = await this.hashPassword(password);
     }
     
-    const userUpdated = await User.findOneAndUpdate(id, otherUserChanges);
+    const userUpdated = await User.findOneAndUpdate(id, otherUserChanges, {new: true});
     
     return userUpdated;
     
@@ -51,7 +51,7 @@ class UserService {
   
   async delete(id) {
     
-    const userInactivated = await User.findOneAndUpdate(id, {isActive: false});
+    const userInactivated = await User.findOneAndUpdate(id, {isActive: false}, {new: true});
     return userInactivated;
   
   }

@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { validateFields } = require('../middlewares/field-validation');
 const jwtValidator = require('../middlewares/jwt-validator');
-const { createCategory } = require('../schemas/category.schema');
+const { createCategory, getCategorySchema } = require('../schemas/category.schema');
 const CategoryService = require('../service/category.service');
 
 const categoryService = new CategoryService();
@@ -10,9 +10,10 @@ const router = Router();
 router.get('/',
   async(req, res, next) => { 
     const {page = 1, limit = 10 } = req.query;
+    const skipIndex = (page - 1) * limit;
 
     try {
-      const categories = await categoryService.find();
+      const categories = await categoryService.find(limit, skipIndex);
 
       res.status(200).json({
         categories
@@ -48,7 +49,24 @@ router.post('/',
   });
 
 
-router.put('/:id');
+router.put('/:id',
+  jwtValidator,
+  validateFields(getCategorySchema, 'params'),
+  async(req, res, next) => { 
+      const { id } = req.params;
+      const { body } = req.body;
+
+      try {
+        const categoryUpdated = await categoryService.update(body, id);
+
+        res.status(200).json({
+          categoryUpdated
+        });
+      } catch (error) {
+        next(error);
+      }
+    
+  });
 
 router.delete('/:id');
 
