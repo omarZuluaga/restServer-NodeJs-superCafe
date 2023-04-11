@@ -54,10 +54,9 @@ router.put('/:id',
   validateFields(getCategorySchema, 'params'),
   async(req, res, next) => { 
       const { id } = req.params;
-      const { body } = req.body;
 
       try {
-        const categoryUpdated = await categoryService.update(body, id);
+        const categoryUpdated = await categoryService.update(req.body, id);
 
         res.status(200).json({
           categoryUpdated
@@ -68,6 +67,21 @@ router.put('/:id',
     
   });
 
-router.delete('/:id');
+router.delete('/:id',
+  jwtValidator,
+  validateFields(getCategorySchema, 'params'),
+  async(req, res, next) => { 
+    const { id } = req.params;
+
+    try {
+      const categoryDeleted = await categoryService.delete(id);
+
+      res.status(200).json({
+        categoryDeleted
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = router;

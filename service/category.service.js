@@ -45,13 +45,13 @@ class CategoryService {
   }
 
   async update(changes, id) {
-    const categoryUpdated = await Category.findOneAndUpdate(id, changes);
+    const categoryUpdated = await Category.findByIdAndUpdate(id, changes, {new: true});
 
     return categoryUpdated;
   }
 
   async delete(id) {
-    const userInactivated = await Category.findOneAndUpdate(id, {state: false}, {new: true});
+    const userInactivated = await Category.findByIdAndUpdate(id, {state: false}, {new: true});
 
     return userInactivated;
   }
